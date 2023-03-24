@@ -39,7 +39,7 @@ contract YieldFarming is ReentrancyGuard, Ownable{
 
     function stakeTokens(uint256 _amount) external {
        
-        if (IERC20(tokenAddress).balanceOf(msg.sender) <= _amount) {
+        if (IERC20(tokenAddress).balanceOf(msg.sender) <= _amount) returns(bool isStaked){
           revert InsufficientBalance();
         }
         if (IERC20(tokenAddress).allowance(msg.sender, address(this)) <= _amount) {
@@ -54,7 +54,7 @@ contract YieldFarming is ReentrancyGuard, Ownable{
         temp.pool = currentPool;
         temp.stakeTime = block.timestamp;
         userStake[msg.sender] = temp;
-        IERC20(tokenAddress).transferFrom(msg.sender, address(this), _amount);
+      isStaked = IERC20(tokenAddress).transferFrom(msg.sender, address(this), _amount);
 
 
     }
