@@ -11,13 +11,14 @@ error InsufficientBalance();
 error approvalError();
 error stakingNotStarted();
 error zeroValuesNotAllowed();
+
 contract YieldFarming is ReentrancyGuard, Ownable{
     
     address public immutable tokenAddress;
     
     uint256 private immutable startTime;
     uint256 public currentPool;
-    
+    string name = "YIELD";
     struct poolDetail {
         uint256 poolId;
         uint256 rewardRate; 
@@ -37,9 +38,9 @@ contract YieldFarming is ReentrancyGuard, Ownable{
         startTime = _startTime;
     }
 
-    function stakeTokens(uint256 _amount) external {
+    function stakeTokens(uint256 _amount) external returns(bool isStaked){
        
-        if (IERC20(tokenAddress).balanceOf(msg.sender) <= _amount) returns(bool isStaked){
+        if (IERC20(tokenAddress).balanceOf(msg.sender) <= _amount) {
           revert InsufficientBalance();
         }
         if (IERC20(tokenAddress).allowance(msg.sender, address(this)) <= _amount) {
