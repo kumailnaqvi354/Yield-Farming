@@ -11,6 +11,7 @@ error InsufficientBalance();
 error approvalError();
 error stakingNotStarted();
 error zeroValuesNotAllowed();
+error NoStaking();
 
 contract YieldFarming is ReentrancyGuard, Ownable{
     
@@ -71,6 +72,17 @@ contract YieldFarming is ReentrancyGuard, Ownable{
         temp.maxReward = _maxReward;
         pools[_poolId] = temp;
         currentPool = _poolId; 
+    }
+
+    function calculateReward(address _user) internal view returns(uint256) {
+        userStakeDetail memory cache = userStake[_user];
+        poolDetail memory temp = pools[currentPool];
+        if(cache.amount <= 0){
+            revert NoStaking();
+        }
+        uint256 rewardAmount = (block.timestamp -  cache.stakeTime) * temp.rewardRate / IERC20(tokenAddress).balanceOf(address(this));
+        uint256 finalAmount = rewardAmount * cache.amount;
+        return finalAmount;
     }
     
 }
