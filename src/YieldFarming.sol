@@ -19,7 +19,7 @@ contract YieldFarming is ReentrancyGuard, Ownable{
     
     uint256 private immutable startTime;
     uint256 public currentPool;
-    string name = "YIELD";
+    string public name = "YIELD";
     struct poolDetail {
         uint256 poolId;
         uint256 rewardRate; 
