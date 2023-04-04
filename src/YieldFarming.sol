@@ -32,8 +32,8 @@ contract YieldFarming is ReentrancyGuard, Ownable{
         uint256 pool;
         uint256 amount;
     }
-    mapping (address => userStakeDetail) userStake;
-    mapping (uint256 => poolDetail) pools;
+    mapping (address => userStakeDetail) public userStake;
+    mapping (uint256 => poolDetail) public pools;
     
     constructor(address _rewardTokenAddress, uint256 _startTime) {
         tokenAddress = _rewardTokenAddress;

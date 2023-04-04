@@ -38,13 +38,7 @@ contract ContractTest is Test {
         t.currentPool();
 
         t.pools(t.currentPool());
-        // t.poolDetail memory message = t.poolDetail({
-        //     poolId : t.currentPool(),
-        //     rewardRate : 5000000000000000,
-        //     totalAwardDistributed : 5000000000000000,
-        //     maxReward : 0   
-        // });
-        // t.poolDetail memory temp = pools[t.currentPool()];
+     
         assertEq(t.currentPool(), 1);
     }
 }

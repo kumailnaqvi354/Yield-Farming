@@ -1,2 +1,3 @@
 ContractTest:testExample() (gas: 257)
-ContractTest:testExample() (gas: 257)
+ContractTest:testName() (gas: 9546)
+ContractTest:testaddPool() (gas: 104835)
