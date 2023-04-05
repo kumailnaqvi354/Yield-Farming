@@ -5,33 +5,16 @@ import "openzeppelin-contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-contracts/utils/Counters.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/access/Ownable.sol";
+import "./IYieldFarming.sol";
 
-
-error InsufficientBalance();
-error approvalError();
-error stakingNotStarted();
-error zeroValuesNotAllowed();
-error NoStaking();
-
-contract YieldFarming is ReentrancyGuard, Ownable{
+contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
     
     address public immutable tokenAddress;
     
     uint256 private immutable startTime;
     uint256 public currentPool;
     string public name = "YIELD";
-    
-    struct poolDetail {
-        uint256 poolId;
-        uint256 rewardRate; 
-        uint256 totalAwardDistributed;
-        uint256 maxReward;   
-    }
-    struct userStakeDetail {
-        uint256 stakeTime;
-        uint256 pool;
-        uint256 amount;
-    }
+ 
     mapping (address => userStakeDetail) public userStake;
     mapping (uint256 => poolDetail) public pools;
     
@@ -40,7 +23,7 @@ contract YieldFarming is ReentrancyGuard, Ownable{
         startTime = _startTime;
     }
 
-    function stakeTokens(uint256 _amount) external returns(bool isStaked){
+    function stakeTokens(uint256 _amount) external override returns(bool isStaked){
        
         if (IERC20(tokenAddress).balanceOf(msg.sender) <= _amount) {
           revert InsufficientBalance();
@@ -56,13 +39,13 @@ contract YieldFarming is ReentrancyGuard, Ownable{
         temp.amount = _amount;
         temp.pool = currentPool;
         temp.stakeTime = block.timestamp;
-        userStake[msg.sender] = temp;
+       userStake[msg.sender] = temp;
       isStaked = IERC20(tokenAddress).transferFrom(msg.sender, address(this), _amount);
 
 
     }
 
-    function createPool(uint256 _maxReward, uint256 _rewardRate) external onlyOwner{
+    function createPool(uint256 _maxReward, uint256 _rewardRate) external override onlyOwner{
         if (_maxReward == 0 && _rewardRate == 0) {
             revert zeroValuesNotAllowed();
         }
