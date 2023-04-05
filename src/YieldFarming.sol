@@ -51,11 +51,13 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
         }
         uint256 _poolId = currentPool + 1;
         poolDetail memory temp = pools[currentPool];
+        currentPool = _poolId; 
         temp.poolId = _poolId;
         temp.rewardRate = _rewardRate;
         temp.maxReward = _maxReward;
         pools[_poolId] = temp;
-        currentPool = _poolId; 
+    
+
     }
 
     function calculateReward(address _user) internal view returns(uint256) {
