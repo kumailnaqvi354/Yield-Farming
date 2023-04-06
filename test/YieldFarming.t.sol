@@ -35,18 +35,30 @@ contract ContractTest is Test {
 
 
     function testCreatePool() external {
+
         // console.log("here", userB);
         // console.log("here admin", t.owner());
-    t.createPool(100000000000000000000, 5000000000000000);
-    t.createPool(100000000000000000000, 5000000000000000);
-    assertTrue(t.currentPool() == 2);       
-    vm.prank(address(userB));
-    t.createPool(100000000000000000000, 5000000000000000);
+        
+        t.createPool(100000000000000000000, 5000000000000000);
 
-    }
+        (uint256 temp1,uint256 temp2,uint256 temp3,uint256 temp4) = t.pools(t.currentPool());
+        console.log("here 1", temp1);
+        // t.createPool(100000000000000000000, 5000000000000000);
+            IYieldFarming.poolDetail memory temp = IYieldFarming.poolDetail({
+                poolId: 1,
+                rewardRate:5000000000000000,
+                totalAwardDistributed:0,
+                maxReward:100000000000000000000
+            });
 
-    function testStaking() external {
-    //    token.allowance();
+    assertTrue(t.currentPool() == temp.poolId);
+    assertTrue(temp2 == temp.rewardRate);
+    assertTrue(temp3 == temp.totalAwardDistributed);
+    assertTrue(temp4 == temp.maxReward);
+
+
+    // vm.prank(address(userB));
+    // t.createPool(100000000000000000000, 5000000000000000);
 
     }
 
