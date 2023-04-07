@@ -60,7 +60,7 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
 
     }
 
-    function calculateReward(address _user) internal view returns(uint256) {
+    function calculateReward(address _user) external view returns(uint256) {
         userStakeDetail memory cache = userStake[_user];
         poolDetail memory temp = pools[currentPool];
         if(cache.amount <= 0){

@@ -6,6 +6,8 @@ import "forge-std/console.sol";
 import "../src/YieldFarming.sol";
 import "../src/IYieldFarming.sol";
 import "../src/Token.sol";
+import "openzeppelin-contracts/token/ERC20/IERC20.sol";
+
 
 contract ContractTest is Test {
 
@@ -14,6 +16,9 @@ contract ContractTest is Test {
     address admin;
     address payable userA;
     address payable userB;    
+    
+uint[] public maxReward = [100000000000000000000, 5000000000000000000,200000000000000000000,5000000000000000000,100000000000000000000];
+uint[] public rewardRate = [1200000000000000, 200000000000000000000,1200000000000000,3000000000000000,200000000000000000000];
 
     function setUp() public {
         userA = payable(vm.addr(2));
@@ -36,14 +41,8 @@ contract ContractTest is Test {
 
     function testCreatePool() external {
 
-        // console.log("here", userB);
-        // console.log("here admin", t.owner());
-        
         t.createPool(100000000000000000000, 5000000000000000);
-
         (uint256 temp1,uint256 temp2,uint256 temp3,uint256 temp4) = t.pools(t.currentPool());
-        console.log("here 1", temp1);
-        // t.createPool(100000000000000000000, 5000000000000000);
             IYieldFarming.poolDetail memory temp = IYieldFarming.poolDetail({
                 poolId: 1,
                 rewardRate:5000000000000000,
@@ -51,15 +50,47 @@ contract ContractTest is Test {
                 maxReward:100000000000000000000
             });
 
-    assertTrue(t.currentPool() == temp.poolId);
+    assertTrue(t.currentPool() == temp.poolId && t.currentPool() == temp1);
     assertTrue(temp2 == temp.rewardRate);
     assertTrue(temp3 == temp.totalAwardDistributed);
     assertTrue(temp4 == temp.maxReward);
 
 
-    // vm.prank(address(userB));
-    // t.createPool(100000000000000000000, 5000000000000000);
-
     }
+
+    function testFuzzCreatePool() external {
+
+    for (uint i = 0; i < maxReward.length; i++) {
+            t.createPool(maxReward[i], rewardRate[i]);
+            // vm.prank(userB);
+
+            // t.createPool(100000000000000000000, 5000000000000000);
+            // t.createPool(maxReward[i], rewardRate[i]);
+
+    
+    }
+        //      t.createPool(100000000000000000000, 5000000000000000);
+        //   t.createPool(100000000000000000000, 5000000000000000);
+        //    t.createPool(100000000000000000000, 5000000000000000);
+        //     t.createPool(100000000000000000000, 5000000000000000);
+        //     vm.prank(userB);
+        //      t.createPool(100000000000000000000, 5000000000000000);
+    }
+
+    function testStakeTokens() external {
+        t.createPool(100000000000000000000, 5000000000000000);
+        token.transfer(userA, 100000000000000000000);
+        // console.log("here instance:", t.currentPool());
+        vm.prank(userA);
+        
+        // t.stakeTokens(100);
+        console.log("Staking Contract Address", address(token));
+      bool status = token.approve(address(this), 100000000000000000000);
+      console.log("status", status);
+        uint256 _allownceAmount = token.allowance(address(userA), address(this));
+        console.log("_allownceAmount", _allownceAmount);
+        console.log("balance of user", token.balanceOf(userA));
+    }
+
 
 }
