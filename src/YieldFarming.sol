@@ -6,6 +6,7 @@ import "openzeppelin-contracts/utils/Counters.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/access/Ownable.sol";
 import "./IYieldFarming.sol";
+import "forge-std/console.sol";
 
 contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
     
@@ -31,7 +32,7 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
         if (IERC20(tokenAddress).allowance(msg.sender, address(this)) <= _amount) {
             revert approvalError();
         }
-        if(startTime > block.timestamp) {
+        if(startTime < block.timestamp) {
             revert stakingNotStarted();
         }
 

@@ -23,8 +23,9 @@ uint[] public rewardRate = [1200000000000000, 200000000000000000000,120000000000
     function setUp() public {
         userA = payable(vm.addr(2));
         userB = payable(vm.addr(1));
+        // vm.prank(userA);
         token = new Token();
-        t = new YieldFarming(t.tokenAddress.address, block.timestamp);
+        t = new YieldFarming(address(token), 1680863492);
     }
 
     // function testExample() public {
@@ -82,15 +83,35 @@ uint[] public rewardRate = [1200000000000000, 200000000000000000000,120000000000
         token.transfer(userA, 100000000000000000000);
         // console.log("here instance:", t.currentPool());
         vm.prank(userA);
-        
+        // console.log("address A", userA);
         // t.stakeTokens(100);
-        console.log("Staking Contract Address", address(token));
-      bool status = token.approve(address(this), 100000000000000000000);
-      console.log("status", status);
-        uint256 _allownceAmount = token.allowance(address(userA), address(this));
-        console.log("_allownceAmount", _allownceAmount);
-        console.log("balance of user", token.balanceOf(userA));
+        // console.log("Staking Contract Address", address(token));
+        bool status = token.approve(address(t), 10000000000000000000);
+        // console.log("status", status);
+        uint256 _allownceAmount = token.allowance(address(userA), address(t));
+        // console.log("_allownceAmount this", _allownceAmount);
+        // console.log("address this", address(this));
+
+        uint256 balanceBefore = token.balanceOf(address(this));
+        console.log("balanceBefore:", balanceBefore);
+        vm.prank(userA);
+        // console.log("address A", userA);
+
+        bool success = t.stakeTokens(800000000000000000);
+        console.log("status:", success);
+        uint256 balanceAfter = token.balanceOf(address(this));
+        console.log("balanceAfter:", balanceAfter);
+
+        (uint256 stakeTime, uint256 _pool, uint256 _amount) = t.userStake(userA);
+
+        console.log("here time", stakeTime);
+        console.log("here pool", _pool);
+        console.log("here amount", _amount);
+        // assertEq(_amount, 800000000000000000);
+        // assertEq(_pool, t.createPool());
     }
+
+
 
 
 }
