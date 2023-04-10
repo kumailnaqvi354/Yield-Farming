@@ -102,13 +102,25 @@ uint[] public rewardRate = [1200000000000000, 200000000000000000000,120000000000
         uint256 balanceAfter = token.balanceOf(address(this));
         console.log("balanceAfter:", balanceAfter);
 
-        (uint256 stakeTime, uint256 _pool, uint256 _amount) = t.userStake(userA);
+        (uint256 _stakeTime, uint256 _pool, uint256 _amount) = t.userStake(userA);
 
-        console.log("here time", stakeTime);
-        console.log("here pool", _pool);
-        console.log("here amount", _amount);
-        // assertEq(_amount, 800000000000000000);
-        // assertEq(_pool, t.createPool());
+        assertEq(_amount, 800000000000000000);
+        assertEq(_pool, 1);
+        assertEq(_stakeTime, 1);
+        
+    }
+
+    function testCalculateReward() public {
+        t.createPool(100000000000000000000, 5000000000000000);
+        token.transfer(userA, 100000000000000000000);
+        vm.prank(userA);
+        bool status = token.approve(address(t), 10000000000000000000);
+        vm.prank(userA);
+        bool success = t.stakeTokens(800000000000000000);
+        (uint256 _stakeTime, uint256 _pool, uint256 _amount) = t.userStake(userA);
+        vm.warp(1641070800);
+        uint256 _reward = t.calculateReward(userA);
+        console.log("reward here ", _reward);
     }
 
 
