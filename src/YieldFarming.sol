@@ -57,16 +57,21 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
         temp.rewardRate = _rewardRate;
         temp.maxReward = _maxReward;
         pools[_poolId] = temp;
-    
-
     }
 
     function calculateReward(address _user) external view returns(uint256) {
+        if(_user == address(0)){
+            revert InvalidUser();
+        }
+        if(currentPool == 0){
+            revert stakingNotStarted();
+        }
         userStakeDetail memory cache = userStake[_user];
         poolDetail memory temp = pools[currentPool];
         if(cache.amount <= 0){
             revert NoStaking();
         }
+        console.log("in Contract",cache.stakeTime);
         uint256 rewardAmount = (block.timestamp -  cache.stakeTime) * temp.rewardRate / IERC20(tokenAddress).balanceOf(address(this));
         uint256 finalAmount = rewardAmount * cache.amount;
         return finalAmount;

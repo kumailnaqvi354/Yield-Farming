@@ -93,14 +93,14 @@ uint[] public rewardRate = [1200000000000000, 200000000000000000000,120000000000
         // console.log("address this", address(this));
 
         uint256 balanceBefore = token.balanceOf(address(this));
-        console.log("balanceBefore:", balanceBefore);
+        // console.log("balanceBefore:", balanceBefore);
         vm.prank(userA);
         // console.log("address A", userA);
 
         bool success = t.stakeTokens(800000000000000000);
-        console.log("status:", success);
+        // console.log("status:", success);
         uint256 balanceAfter = token.balanceOf(address(this));
-        console.log("balanceAfter:", balanceAfter);
+        // console.log("balanceAfter:", balanceAfter);
 
         (uint256 _stakeTime, uint256 _pool, uint256 _amount) = t.userStake(userA);
 
@@ -117,10 +117,16 @@ uint[] public rewardRate = [1200000000000000, 200000000000000000000,120000000000
         bool status = token.approve(address(t), 10000000000000000000);
         vm.prank(userA);
         bool success = t.stakeTokens(800000000000000000);
-        (uint256 _stakeTime, uint256 _pool, uint256 _amount) = t.userStake(userA);
+        (uint256 _stakeTime,,uint256 amount) = t.userStake(userA);
         vm.warp(1641070800);
+        (,uint256 rewardRate,,) = t.pools(t.currentPool());
+        // console.log("here", amount);
+        uint256 rewardAmount = (block.timestamp -  _stakeTime) * rewardRate / token.balanceOf(address(t));
+        uint256 finalAmount = rewardAmount * amount;
+        console.log("finalAmount",finalAmount);
         uint256 _reward = t.calculateReward(userA);
         console.log("reward here ", _reward);
+        assertEq(_reward, finalAmount);
     }
 
 

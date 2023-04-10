@@ -8,6 +8,7 @@ error approvalError();
 error stakingNotStarted();
 error zeroValuesNotAllowed();
 error NoStaking();
+error InvalidUser();
  
     struct poolDetail {
         uint256 poolId;
