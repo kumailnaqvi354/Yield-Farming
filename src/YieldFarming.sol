@@ -71,7 +71,6 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
         if(cache.amount <= 0){
             revert NoStaking();
         }
-        console.log("in Contract",cache.stakeTime);
         uint256 rewardAmount = (block.timestamp -  cache.stakeTime) * temp.rewardRate / IERC20(tokenAddress).balanceOf(address(this));
         uint256 finalAmount = rewardAmount * cache.amount;
         return finalAmount;
