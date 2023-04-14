@@ -77,7 +77,7 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
         return finalAmount;
     }
     
-    function unstakeTokens() external nonReentrant() {
+    function unstakeTokens() external nonReentrant() returns (bool success){
         if (msg.sender == address(0)) {
             revert InvalidUser();
         }
@@ -88,6 +88,7 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
         uint256 _amount = cache.amount;
         delete userStake[msg.sender];
         IERC20(tokenAddress).transfer(msg.sender, _amount);
+        success;
     }
 
 }
