@@ -13,8 +13,7 @@ error InvalidUser();
     struct poolDetail {
         uint256 poolId;
         uint256 rewardRate; 
-        uint256 totalAwardDistributed;
-        uint256 maxReward;   
+        uint256 totalAwardDistributed;  
     }
     struct userStakeDetail {
         uint256 stakeTime;

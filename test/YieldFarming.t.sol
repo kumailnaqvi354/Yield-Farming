@@ -50,20 +50,18 @@ contract ContractTest is Test {
 
     function testCreatePool() external {
         t.createPool(100000000000000000000, 5000000000000000);
-        (uint256 temp1, uint256 temp2, uint256 temp3, uint256 temp4) = t.pools(
+        (uint256 temp1, uint256 temp2, uint256 temp3) = t.pools(
             t.currentPool()
         );
         IYieldFarming.poolDetail memory temp = IYieldFarming.poolDetail({
             poolId: 1,
             rewardRate: 5000000000000000,
-            totalAwardDistributed: 0,
-            maxReward: 100000000000000000000
+            totalAwardDistributed: 0
         });
 
         assertTrue(t.currentPool() == temp.poolId && t.currentPool() == temp1);
         assertTrue(temp2 == temp.rewardRate);
         assertTrue(temp3 == temp.totalAwardDistributed);
-        assertTrue(temp4 == temp.maxReward);
     }
 
     function testFuzzCreatePool() external {
@@ -125,7 +123,7 @@ contract ContractTest is Test {
         bool success = t.stakeTokens(800000000000000000);
         (uint256 _stakeTime, , uint256 amount) = t.userStake(userA);
         vm.warp(1641070800);
-        (, uint256 rewardRate, , ) = t.pools(t.currentPool());
+        (, uint256 rewardRate, ) = t.pools(t.currentPool());
         // console.log("here", amount);
         uint256 rewardAmount = ((block.timestamp - _stakeTime) * rewardRate) /
             token.balanceOf(address(t));
@@ -141,7 +139,7 @@ contract ContractTest is Test {
         bool successB = t.stakeTokens(900000000000000000);
         (uint256 _stakeTimeB, , uint256 amountB) = t.userStake(userB);
         vm.warp(1681121382);
-        (, uint256 rewardRateB, , ) = t.pools(t.currentPool());
+        (, uint256 rewardRateB, ) = t.pools(t.currentPool());
 
         uint256 rewardAmountB = ((block.timestamp - _stakeTimeB) *
             rewardRateB) / token.balanceOf(address(t));
