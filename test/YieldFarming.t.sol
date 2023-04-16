@@ -15,6 +15,8 @@ contract ContractTest is Test {
     address payable userA;
     address payable userB;
 
+    using SafeMath for uint256;
+
     uint[] public maxReward = [
         100000000000000000000,
         5000000000000000000,
@@ -125,9 +127,10 @@ contract ContractTest is Test {
         vm.warp(1641070800);
         (, uint256 rewardRate, ) = t.pools(t.currentPool());
         // console.log("here", amount);
-        uint256 rewardAmount = ((block.timestamp - _stakeTime) * rewardRate) /
-            token.balanceOf(address(t));
-        uint256 finalAmount = rewardAmount * amount;
+        uint256 rewardAmount = ((block.timestamp.sub(_stakeTime)).mul(
+            rewardRate
+        ) / token.balanceOf(address(t)));
+        uint256 finalAmount = rewardAmount.mul(amount);
         // console.log("finalAmount",finalAmount);
         uint256 _reward = t.calculateReward(userA);
         // console.log("reward here ", _reward);
@@ -141,8 +144,9 @@ contract ContractTest is Test {
         vm.warp(1681121382);
         (, uint256 rewardRateB, ) = t.pools(t.currentPool());
 
-        uint256 rewardAmountB = ((block.timestamp - _stakeTimeB) *
-            rewardRateB) / token.balanceOf(address(t));
+        uint256 rewardAmountB = ((block.timestamp.sub(_stakeTimeB)).mul(
+            rewardRateB
+        ) / token.balanceOf(address(t)));
         uint256 finalAmountB = rewardAmountB * amountB;
         // console.log("finalAmount",finalAmount);
         uint256 _rewardB = t.calculateReward(userB);
@@ -167,5 +171,6 @@ contract ContractTest is Test {
         // uint256 _reward = t.calculateReward(userA);
         // console.log("reward here ", _reward);
         assertEq(amount, 0);
+        assertEq(_stakeTime, 0);
     }
 }
