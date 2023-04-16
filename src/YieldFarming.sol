@@ -67,7 +67,7 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
             revert stakingNotStarted();
         }
         userStakeDetail memory cache = userStake[_user];
-        poolDetail memory temp = pools[currentPool];
+        poolDetail memory temp = pools[cache.pool];
         if(cache.amount <= 0){
             revert NoStaking();
         }
@@ -88,6 +88,21 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
         delete userStake[msg.sender];
         IERC20(tokenAddress).transfer(msg.sender, _amount);
         success;
+    }
+
+    function claimReward() external nonReentrant() {
+        if (msg.sender == address(0)) {
+            revert InvalidUser();
+        }
+        userStakeDetail memory cache = userStake[msg.sender];
+        if(cache.amount == 0){
+            revert NoStaking();
+        }
+        uint256 rewardAmount = calculateReward(msg.sender);
+        cache.stakeTime = block.timestamp;
+         
+
+
     }
 
 }
