@@ -5,6 +5,7 @@ import "openzeppelin-contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-contracts/utils/Counters.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/access/Ownable.sol";
+import "openzeppelin-contracts/utils/math/SafeMath.sol";
 import "./IYieldFarming.sol";
 import "forge-std/console.sol";
 
@@ -12,6 +13,7 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
     
     address public immutable tokenAddress;
     
+    using SafeMath for uint256;
     uint256 private immutable startTime;
     uint256 public currentPool;
     string public name = "YIELD";
@@ -70,7 +72,8 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
         if(cache.amount <= 0){
             revert NoStaking();
         }
-        uint256 rewardAmount = (block.timestamp -  cache.stakeTime) * temp.rewardRate / IERC20(tokenAddress).balanceOf(address(this));
+        uint256 stakeAmount = IERC20(tokenAddress).balanceOf(address(this));
+        uint256 rewardAmount = (block.timestamp.sub(cache.stakeTime)).mul(temp.rewardRate.div(stakeAmount)) ;
         uint256 finalAmount = rewardAmount * cache.amount;
         return finalAmount;
     }
@@ -94,14 +97,17 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming{
             revert InvalidUser();
         }
         userStakeDetail memory cache = userStake[msg.sender];
+        poolDetail memory temp = pools[cache.pool];
         if(cache.amount == 0){
             revert NoStaking();
         }
+
         uint256 rewardAmount = calculateReward(msg.sender);
         cache.stakeTime = block.timestamp;
-
-
-
+        temp.totalAwardDistributed = temp.totalAwardDistributed.add(rewardAmount); 
+        userStake[msg.sender] = cache;
+        pools[cache.pool] = temp;
+        IERC20(tokenAddress).transfer(msg.sender, rewardAmount);
     }
 
 }
