@@ -126,14 +126,9 @@ contract ContractTest is Test {
         (uint256 _stakeTime, , uint256 amount) = t.userStake(userA);
         vm.warp(1641070800);
         (, uint256 rewardRate, ) = t.pools(t.currentPool());
-        // console.log("here", amount);
-        uint256 rewardAmount = ((block.timestamp.sub(_stakeTime)).mul(
-            rewardRate
-        ) / token.balanceOf(address(t)));
+        uint256 rewardAmount = ((block.timestamp.sub(_stakeTime)).mul(rewardRate).div( token.balanceOf(address(t))));
         uint256 finalAmount = rewardAmount.mul(amount);
-        // console.log("finalAmount",finalAmount);
         uint256 _reward = t.calculateReward(userA);
-        // console.log("reward here ", _reward);
         assertEq(_reward, finalAmount);
 
         vm.prank(userB);
@@ -143,14 +138,10 @@ contract ContractTest is Test {
         (uint256 _stakeTimeB, , uint256 amountB) = t.userStake(userB);
         vm.warp(1681121382);
         (, uint256 rewardRateB, ) = t.pools(t.currentPool());
-
-        uint256 rewardAmountB = ((block.timestamp.sub(_stakeTimeB)).mul(
-            rewardRateB
-        ) / token.balanceOf(address(t)));
-        uint256 finalAmountB = rewardAmountB * amountB;
+        uint256 rewardAmountB = ((block.timestamp.sub(_stakeTimeB)).mul(rewardRateB).div(token.balanceOf(address(t))));
+        uint256 finalAmountB = rewardAmountB.mul(amountB);
         // console.log("finalAmount",finalAmount);
         uint256 _rewardB = t.calculateReward(userB);
-        // console.log("reward here ", _reward);
         assertEq(_rewardB, finalAmountB);
     }
 
@@ -169,7 +160,8 @@ contract ContractTest is Test {
 
         // vm.warp(1641070800);
         // uint256 _reward = t.calculateReward(userA);
-        // console.log("reward here ", _reward);
+        // console.log("amount here ", amount);
+        // console.log("_stakeTime here ", _stakeTime);
         assertEq(amount, 0);
         assertEq(_stakeTime, 0);
     }
@@ -179,8 +171,11 @@ contract ContractTest is Test {
         token.transfer(userA, 100000000000000000000);
         token.transfer(userB, 100000000000000000000);
         vm.prank(userA);
-         token.approve(address(t), 10000000000000000000);
+        token.approve(address(t), 10000000000000000000);
         vm.prank(userA);
-         t.stakeTokens(800000000000000000);
+        t.stakeTokens(800000000000000000);
+
+        vm.prank(userB);
+        t.unstakeTokens();
     }
 }

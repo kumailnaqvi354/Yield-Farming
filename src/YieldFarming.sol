@@ -25,10 +25,7 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming {
         startTime = _startTime;
     }
 
-    function stakeTokens(uint256 _amount)
-        external
-        override
-    {
+    function stakeTokens(uint256 _amount) external override {
         if (IERC20(tokenAddress).balanceOf(msg.sender) <= _amount) {
             revert InsufficientBalance();
         }
@@ -46,11 +43,7 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming {
         temp.pool = currentPool;
         temp.stakeTime = block.timestamp;
         userStake[msg.sender] = temp;
-         IERC20(tokenAddress).transferFrom(
-            msg.sender,
-            address(this),
-            _amount
-        );
+        IERC20(tokenAddress).transferFrom(msg.sender, address(this), _amount);
     }
 
     function createPool(uint256 _maxReward, uint256 _rewardRate)
@@ -82,14 +75,12 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming {
             revert NoStaking();
         }
         uint256 stakeAmount = IERC20(tokenAddress).balanceOf(address(this));
-        uint256 rewardAmount = (block.timestamp.sub(cache.stakeTime)).mul(
-            temp.rewardRate.div(stakeAmount)
-        );
+        uint256 rewardAmount = (block.timestamp - cache.stakeTime) * temp.rewardRate / IERC20(tokenAddress).balanceOf(address(this));
         uint256 finalAmount = rewardAmount.mul(cache.amount);
         return finalAmount;
     }
 
-    function unstakeTokens() external nonReentrant {
+    function unstakeTokens() external nonReentrant() {
         if (msg.sender == address(0)) {
             revert InvalidUser();
         }
@@ -102,7 +93,7 @@ contract YieldFarming is ReentrancyGuard, Ownable, IYieldFarming {
         IERC20(tokenAddress).transfer(msg.sender, _amount);
     }
 
-    function claimReward() external nonReentrant {
+    function claimReward() external nonReentrant() {
         if (msg.sender == address(0)) {
             revert InvalidUser();
         }
