@@ -170,12 +170,26 @@ contract ContractTest is Test {
          t.createPool(100000000000000000000, 5000000000000000);
         token.transfer(userA, 100000000000000000000);
         token.transfer(userB, 100000000000000000000);
+        token.transfer(address(t), 100000000000000000000000000);
         vm.prank(userA);
         token.approve(address(t), 10000000000000000000);
         vm.prank(userA);
         t.stakeTokens(800000000000000000);
+        vm.warp(1641070800);
 
-        vm.prank(userB);
+        uint256 _expectedBalance = token.balanceOf(userA).add(t.calculateReward(userA));
+        console.log("_expectedBalance",_expectedBalance);
+        vm.prank(userA);
+        t.claimReward();
+         uint256 _actualBalance = token.balanceOf(userA);
+         console.log("_actualBalance", _actualBalance);
+
+         assertEq(_expectedBalance, _actualBalance);
+        vm.prank(userA);
         t.unstakeTokens();
+        // vm.prank(userA);
+        // t.claimReward();
+
+
     }
 }

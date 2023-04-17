@@ -24,7 +24,7 @@ address owner;
 
 constructor() ERC20("Test Token", "DRET"){
     owner = msg.sender;
-    _mint(msg.sender, 100000 *10 **18);
+    _mint(msg.sender, 1000000000 *10 **18);
 }
 modifier onlyOwner {
       require(msg.sender == owner);
