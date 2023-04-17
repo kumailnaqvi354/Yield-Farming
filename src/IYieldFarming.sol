@@ -23,6 +23,8 @@ error InvalidUser();
 
      function stakeTokens(uint256 _amount) external;
      function createPool(uint256 _maxReward, uint256 _rewardRate) external;
+     function unstakeTokens() external;
+      function claimReward() external;
      
 
 }
