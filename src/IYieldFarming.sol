@@ -21,7 +21,7 @@ error InvalidUser();
         uint256 amount;
     }
 
-     function stakeTokens(uint256 _amount) external returns(bool isStaked);
+     function stakeTokens(uint256 _amount) external;
      function createPool(uint256 _maxReward, uint256 _rewardRate) external;
      
 

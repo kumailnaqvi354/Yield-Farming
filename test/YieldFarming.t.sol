@@ -90,7 +90,7 @@ contract ContractTest is Test {
         // console.log("address A", userA);
         // t.stakeTokens(100);
         // console.log("Staking Contract Address", address(token));
-        bool status = token.approve(address(t), 10000000000000000000);
+         token.approve(address(t), 10000000000000000000);
         // console.log("status", status);
         uint256 _allownceAmount = token.allowance(address(userA), address(t));
         // console.log("_allownceAmount this", _allownceAmount);
@@ -101,7 +101,7 @@ contract ContractTest is Test {
         vm.prank(userA);
         // console.log("address A", userA);
 
-        bool success = t.stakeTokens(800000000000000000);
+       t.stakeTokens(800000000000000000);
         // console.log("status:", success);
         uint256 balanceAfter = token.balanceOf(address(this));
         // console.log("balanceAfter:", balanceAfter);
@@ -120,9 +120,9 @@ contract ContractTest is Test {
         token.transfer(userA, 100000000000000000000);
         token.transfer(userB, 100000000000000000000);
         vm.prank(userA);
-        bool status = token.approve(address(t), 10000000000000000000);
+         token.approve(address(t), 10000000000000000000);
         vm.prank(userA);
-        bool success = t.stakeTokens(800000000000000000);
+         t.stakeTokens(800000000000000000);
         (uint256 _stakeTime, , uint256 amount) = t.userStake(userA);
         vm.warp(1641070800);
         (, uint256 rewardRate, ) = t.pools(t.currentPool());
@@ -139,7 +139,7 @@ contract ContractTest is Test {
         vm.prank(userB);
         bool statusB = token.approve(address(t), 10000000000000000000);
         vm.prank(userB);
-        bool successB = t.stakeTokens(900000000000000000);
+      t.stakeTokens(900000000000000000);
         (uint256 _stakeTimeB, , uint256 amountB) = t.userStake(userB);
         vm.warp(1681121382);
         (, uint256 rewardRateB, ) = t.pools(t.currentPool());
@@ -159,9 +159,9 @@ contract ContractTest is Test {
         token.transfer(userA, 100000000000000000000);
         token.transfer(userB, 100000000000000000000);
         vm.prank(userA);
-        bool status = token.approve(address(t), 10000000000000000000);
+         token.approve(address(t), 10000000000000000000);
         vm.prank(userA);
-        bool success = t.stakeTokens(800000000000000000);
+         t.stakeTokens(800000000000000000);
         // (uint256 _stakeTime,,uint256 amount) = t.userStake(userA);
         vm.prank(userA);
         t.unstakeTokens();
@@ -172,5 +172,15 @@ contract ContractTest is Test {
         // console.log("reward here ", _reward);
         assertEq(amount, 0);
         assertEq(_stakeTime, 0);
+    }
+
+    function testClaimReward() external {
+         t.createPool(100000000000000000000, 5000000000000000);
+        token.transfer(userA, 100000000000000000000);
+        token.transfer(userB, 100000000000000000000);
+        vm.prank(userA);
+         token.approve(address(t), 10000000000000000000);
+        vm.prank(userA);
+         t.stakeTokens(800000000000000000);
     }
 }
